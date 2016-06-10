@@ -895,24 +895,20 @@ QUERY;
     {
         $currentIds = array();
         foreach ($changes[1] as $field => $new) {
-            for ($i = 0, $c = count($new); $i < $c; ++$i) {
-                $ace = $new[$i];
-
-                if (null !== $ace->getId()) {
+            foreach($new as $key => $ace){
+            	if (null !== $ace->getId()) {
                     $currentIds[$ace->getId()] = true;
                 }
             }
         }
 
         foreach ($changes[0] as $old) {
-            for ($i = 0, $c = count($old); $i < $c; ++$i) {
-                $ace = $old[$i];
-
-                if (!isset($currentIds[$ace->getId()])) {
+        	foreach($old as $key => $ace){
+        		if (!isset($currentIds[$ace->getId()])) {
                     $this->connection->executeQuery($this->getDeleteAccessControlEntrySql($ace->getId()));
                     unset($this->loadedAces[$ace->getId()]);
                 }
-            }
+        	}
         }
     }
 
