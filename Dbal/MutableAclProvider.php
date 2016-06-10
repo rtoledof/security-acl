@@ -969,22 +969,18 @@ QUERY;
         list($old, $new) = $changes;
         $currentIds = array();
 
-        for ($i = 0, $c = count($new); $i < $c; ++$i) {
-            $ace = $new[$i];
+        foreach($new as $key => $ace){
+			if (null !== $ace->getId()) {
+				$currentIds[$ace->getId()] = true;
+			}
+		}
 
-            if (null !== $ace->getId()) {
-                $currentIds[$ace->getId()] = true;
-            }
-        }
-
-        for ($i = 0, $c = count($old); $i < $c; ++$i) {
-            $ace = $old[$i];
-
-            if (!isset($currentIds[$ace->getId()])) {
-                $this->connection->executeQuery($this->getDeleteAccessControlEntrySql($ace->getId()));
-                unset($this->loadedAces[$ace->getId()]);
-            }
-        }
+    	foreach($old as $key => $ace){
+    		if (!isset($currentIds[$ace->getId()])) {
+    			$this->connection->executeQuery($this->getDeleteAccessControlEntrySql($ace->getId()));
+    			unset($this->loadedAces[$ace->getId()]);
+    		}
+    	}
     }
 
     /**
